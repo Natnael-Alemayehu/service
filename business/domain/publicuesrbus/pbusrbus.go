@@ -1,4 +1,4 @@
-package pbusrbus
+package publicuesrbus
 
 import (
 	"context"
@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/ardanlabs/service/business/sdk/delegate"
-	"github.com/ardanlabs/service/business/sdk/sqldb"
 	"github.com/ardanlabs/service/foundation/logger"
 	"github.com/ardanlabs/service/foundation/otel"
 	"github.com/google/uuid"
@@ -25,7 +24,6 @@ var (
 // Storer interface declares the behavior this package needs to persist and
 // retrieve data.
 type Storer interface {
-	NewWithTx(tx sqldb.CommitRollbacker) (Storer, error)
 	Create(ctx context.Context, usr PublicUser) error
 	Update(ctx context.Context, usr PublicUser) error
 	Delete(ctx context.Context, usr PublicUser) error

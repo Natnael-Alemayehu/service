@@ -1,4 +1,4 @@
-package userdb
+package publicuserdb
 
 import (
 	"database/sql"
@@ -6,14 +6,14 @@ import (
 	"net/mail"
 	"time"
 
-	"github.com/ardanlabs/service/business/domain/userbus"
+	"github.com/ardanlabs/service/business/domain/publicuesrbus"
 	"github.com/ardanlabs/service/business/sdk/sqldb/dbarray"
 	"github.com/ardanlabs/service/business/types/name"
 	"github.com/ardanlabs/service/business/types/role"
 	"github.com/google/uuid"
 )
 
-type user struct {
+type publicUser struct {
 	ID           uuid.UUID      `db:"user_id"`
 	Name         string         `db:"name"`
 	Email        string         `db:"email"`
@@ -25,8 +25,8 @@ type user struct {
 	DateUpdated  time.Time      `db:"date_updated"`
 }
 
-func toDBUser(bus userbus.User) user {
-	return user{
+func toDBUser(bus publicuesrbus.PublicUser) publicUser {
+	return publicUser{
 		ID:           bus.ID,
 		Name:         bus.Name.String(),
 		Email:        bus.Email.Address,
@@ -42,27 +42,27 @@ func toDBUser(bus userbus.User) user {
 	}
 }
 
-func toBusUser(db user) (userbus.User, error) {
+func toBusUser(db publicUser) (publicuesrbus.PublicUser, error) {
 	addr := mail.Address{
 		Address: db.Email,
 	}
 
 	roles, err := role.ParseMany(db.Roles)
 	if err != nil {
-		return userbus.User{}, fmt.Errorf("parse: %w", err)
+		return publicuesrbus.PublicUser{}, fmt.Errorf("parse: %w", err)
 	}
 
 	nme, err := name.Parse(db.Name)
 	if err != nil {
-		return userbus.User{}, fmt.Errorf("parse name: %w", err)
+		return publicuesrbus.PublicUser{}, fmt.Errorf("parse name: %w", err)
 	}
 
 	department, err := name.ParseNull(db.Department.String)
 	if err != nil {
-		return userbus.User{}, fmt.Errorf("parse department: %w", err)
+		return publicuesrbus.PublicUser{}, fmt.Errorf("parse department: %w", err)
 	}
 
-	bus := userbus.User{
+	bus := publicuesrbus.PublicUser{
 		ID:           db.ID,
 		Name:         nme,
 		Email:        addr,
@@ -72,20 +72,6 @@ func toBusUser(db user) (userbus.User, error) {
 		Department:   department,
 		DateCreated:  db.DateCreated.In(time.Local),
 		DateUpdated:  db.DateUpdated.In(time.Local),
-	}
-
-	return bus, nil
-}
-
-func toBusUsers(dbs []user) ([]userbus.User, error) {
-	bus := make([]userbus.User, len(dbs))
-
-	for i, db := range dbs {
-		var err error
-		bus[i], err = toBusUser(db)
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	return bus, nil

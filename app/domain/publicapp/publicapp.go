@@ -9,7 +9,7 @@ import (
 
 	"github.com/ardanlabs/service/app/sdk/auth"
 	"github.com/ardanlabs/service/app/sdk/errs"
-	"github.com/ardanlabs/service/business/domain/pbusrbus"
+	"github.com/ardanlabs/service/business/domain/publicuesrbus"
 	"github.com/ardanlabs/service/business/domain/userbus"
 	"github.com/ardanlabs/service/business/types/role"
 	"github.com/ardanlabs/service/foundation/web"
@@ -18,11 +18,11 @@ import (
 
 type app struct {
 	auth     *auth.Auth
-	pbusrbus *pbusrbus.Business
+	pbusrbus *publicuesrbus.Business
 	kid      string
 }
 
-func newApp(auth *auth.Auth, pbusrbus *pbusrbus.Business, kid string) *app {
+func newApp(auth *auth.Auth, pbusrbus *publicuesrbus.Business, kid string) *app {
 	return &app{
 		auth:     auth,
 		pbusrbus: pbusrbus,

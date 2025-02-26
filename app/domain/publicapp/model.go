@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/ardanlabs/service/app/sdk/errs"
-	"github.com/ardanlabs/service/business/domain/pbusrbus"
+	"github.com/ardanlabs/service/business/domain/publicuesrbus"
 	"github.com/ardanlabs/service/business/types/name"
 	"github.com/ardanlabs/service/business/types/role"
 )
@@ -31,7 +31,7 @@ func (app User) Encode() ([]byte, string, error) {
 	return data, "application/json", err
 }
 
-func toAppUser(bus pbusrbus.PublicUser) User {
+func toAppUser(bus publicuesrbus.PublicUser) User {
 	return User{
 		ID:           bus.ID.String(),
 		Name:         bus.Name.String(),
@@ -71,28 +71,28 @@ func (req RegisterRequest) Validate() error {
 	return nil
 }
 
-func toBusPublicNewUser(req RegisterRequest) (pbusrbus.NewPublicUser, error) {
+func toBusPublicNewUser(req RegisterRequest) (publicuesrbus.NewPublicUser, error) {
 	roles, err := role.ParseMany(req.Roles)
 	if err != nil {
-		return pbusrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
+		return publicuesrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
 	}
 
 	addr, err := mail.ParseAddress(req.Email)
 	if err != nil {
-		return pbusrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
+		return publicuesrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
 	}
 
 	nme, err := name.Parse(req.Name)
 	if err != nil {
-		return pbusrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
+		return publicuesrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
 	}
 
 	department, err := name.ParseNull(req.Department)
 	if err != nil {
-		return pbusrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
+		return publicuesrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
 	}
 
-	bus := pbusrbus.NewPublicUser{
+	bus := publicuesrbus.NewPublicUser{
 		Name:       nme,
 		Email:      *addr,
 		Roles:      roles,

@@ -1,4 +1,4 @@
-package pbusrbus
+package publicuesrbus
 
 import (
 	"net/mail"

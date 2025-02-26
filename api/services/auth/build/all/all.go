@@ -6,7 +6,11 @@ import (
 
 	"github.com/ardanlabs/service/app/domain/authapp"
 	"github.com/ardanlabs/service/app/domain/checkapp"
+	"github.com/ardanlabs/service/app/domain/publicapp"
 	"github.com/ardanlabs/service/app/sdk/mux"
+	"github.com/ardanlabs/service/business/domain/publicuesrbus"
+	publicuserdb "github.com/ardanlabs/service/business/domain/publicuesrbus/stores/publicuserdb"
+	pubicusercache "github.com/ardanlabs/service/business/domain/publicuesrbus/stores/usercache"
 	"github.com/ardanlabs/service/business/domain/userbus"
 	"github.com/ardanlabs/service/business/domain/userbus/stores/usercache"
 	"github.com/ardanlabs/service/business/domain/userbus/stores/userdb"
@@ -29,6 +33,7 @@ func (add) Add(app *web.App, cfg mux.Config) {
 	// sames instances for the different set of domain apis.
 	delegate := delegate.New(cfg.Log)
 	userBus := userbus.NewBusiness(cfg.Log, delegate, usercache.NewStore(cfg.Log, userdb.NewStore(cfg.Log, cfg.DB), time.Minute))
+	publicUserBus := publicuesrbus.NewBusiness(cfg.Log, delegate, pubicusercache.NewStore(cfg.Log, publicuserdb.NewStore(cfg.Log, cfg.DB), time.Minute))
 
 	checkapp.Routes(app, checkapp.Config{
 		Build: cfg.Build,
@@ -39,5 +44,11 @@ func (add) Add(app *web.App, cfg mux.Config) {
 	authapp.Routes(app, authapp.Config{
 		UserBus: userBus,
 		Auth:    cfg.Auth,
+	})
+
+	publicapp.Routes(app, publicapp.Config{
+		Auth:             cfg.Auth,
+		PublicNewUserBus: publicUserBus,
+		Kid:              "54bb2165-71e1-41a6-af3e-7da4a0e1e2c1",
 	})
 }

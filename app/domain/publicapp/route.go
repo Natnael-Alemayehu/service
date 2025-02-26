@@ -4,14 +4,14 @@ import (
 	"net/http"
 
 	"github.com/ardanlabs/service/app/sdk/auth"
-	"github.com/ardanlabs/service/business/domain/pbusrbus"
+	"github.com/ardanlabs/service/business/domain/publicuesrbus"
 	"github.com/ardanlabs/service/foundation/web"
 )
 
 // Config contains all the mandatory systems required by handlers.
 type Config struct {
 	Auth             *auth.Auth
-	PublicNewUserBus *pbusrbus.Business
+	PublicNewUserBus *publicuesrbus.Business
 	Kid              string
 }
 
