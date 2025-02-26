@@ -16,10 +16,10 @@ limitations under the License.
 
 ## Index
 
-* [Installation](https://github.com/ardanlabs/service?tab=readme-ov-file#installation)
-* [Create Your Own Version](https://github.com/ardanlabs/service?tab=readme-ov-file#create-your-own-version)
-* [Running The Project](https://github.com/ardanlabs/service?tab=readme-ov-file#running-the-project)
-* [Joining the Go Slack Community](https://github.com/ardanlabs/service?tab=readme-ov-file#joining-the-go-slack-community)
+* [Installation](https://github.com/Natnael-Alemayehu/service?tab=readme-ov-file#installation)
+* [Create Your Own Version](https://github.com/Natnael-Alemayehu/service?tab=readme-ov-file#create-your-own-version)
+* [Running The Project](https://github.com/Natnael-Alemayehu/service?tab=readme-ov-file#running-the-project)
+* [Joining the Go Slack Community](https://github.com/Natnael-Alemayehu/service?tab=readme-ov-file#joining-the-go-slack-community)
 
 ## Installation
 
