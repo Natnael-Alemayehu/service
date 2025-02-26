@@ -26,10 +26,10 @@ var (
 // retrieve data.
 type Storer interface {
 	NewWithTx(tx sqldb.CommitRollbacker) (Storer, error)
-	Create(ctx context.Context, usr NewPublicUser) error
-	Update(ctx context.Context, usr NewPublicUser) error
-	Delete(ctx context.Context, usr NewPublicUser) error
-	QueryByEmail(ctx context.Context, email mail.Address) (NewPublicUser, error)
+	Create(ctx context.Context, usr PublicUser) error
+	Update(ctx context.Context, usr PublicUser) error
+	Delete(ctx context.Context, usr PublicUser) error
+	QueryByEmail(ctx context.Context, email mail.Address) (PublicUser, error)
 }
 
 // Business manages the set of APIs for user access.
@@ -80,7 +80,7 @@ func (b *Business) Create(ctx context.Context, nu NewPublicUser) (PublicUser, er
 }
 
 // QueryByEmail finds the user by a specified user email.
-func (b *Business) QueryByEmail(ctx context.Context, email mail.Address) (User, error) {
+func (b *Business) QueryByEmail(ctx context.Context, email mail.Address) (PublicUser, error) {
 	ctx, span := otel.AddSpan(ctx, "business.userbus.querybyemail")
 	defer span.End()
 
@@ -95,17 +95,17 @@ func (b *Business) QueryByEmail(ctx context.Context, email mail.Address) (User, 
 // Authenticate finds a user by their email and verifies their password. On
 // success it returns a Claims User representing this user. The claims can be
 // used to generate a token for future authentication.
-func (b *Business) Authenticate(ctx context.Context, email mail.Address, password string) (User, error) {
+func (b *Business) Authenticate(ctx context.Context, email mail.Address, password string) (PublicUser, error) {
 	ctx, span := otel.AddSpan(ctx, "business.userbus.authenticate")
 	defer span.End()
 
 	usr, err := b.QueryByEmail(ctx, email)
 	if err != nil {
-		return User{}, fmt.Errorf("query: email[%s]: %w", email, err)
+		return PublicUser{}, fmt.Errorf("query: email[%s]: %w", email, err)
 	}
 
 	if err := bcrypt.CompareHashAndPassword(usr.PasswordHash, []byte(password)); err != nil {
-		return User{}, fmt.Errorf("comparehashandpassword: %w", ErrAuthenticationFailure)
+		return PublicUser{}, fmt.Errorf("comparehashandpassword: %w", ErrAuthenticationFailure)
 	}
 
 	return usr, nil

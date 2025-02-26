@@ -65,6 +65,8 @@ func (a *app) register(ctx context.Context, r *http.Request) web.Encoder {
 		return errs.New(errs.Internal, err)
 	}
 
+	_ = toAppUser(usr)
+
 	return LoginResponse{Token: token}
 }
 

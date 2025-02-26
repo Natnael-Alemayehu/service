@@ -4,12 +4,48 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/mail"
+	"time"
 
 	"github.com/ardanlabs/service/app/sdk/errs"
 	"github.com/ardanlabs/service/business/domain/pbusrbus"
 	"github.com/ardanlabs/service/business/types/name"
 	"github.com/ardanlabs/service/business/types/role"
 )
+
+// User represents information about an individual user.
+type User struct {
+	ID           string   `json:"id"`
+	Name         string   `json:"name"`
+	Email        string   `json:"email"`
+	Roles        []string `json:"roles"`
+	PasswordHash []byte   `json:"-"`
+	Department   string   `json:"department"`
+	Enabled      bool     `json:"enabled"`
+	DateCreated  string   `json:"dateCreated"`
+	DateUpdated  string   `json:"dateUpdated"`
+}
+
+// Encode implements the encoder interface.
+func (app User) Encode() ([]byte, string, error) {
+	data, err := json.Marshal(app)
+	return data, "application/json", err
+}
+
+func toAppUser(bus pbusrbus.PublicUser) User {
+	return User{
+		ID:           bus.ID.String(),
+		Name:         bus.Name.String(),
+		Email:        bus.Email.Address,
+		Roles:        role.ParseToString(bus.Roles),
+		PasswordHash: bus.PasswordHash,
+		Department:   bus.Department.String(),
+		Enabled:      bus.Enabled,
+		DateCreated:  bus.DateCreated.Format(time.RFC3339),
+		DateUpdated:  bus.DateUpdated.Format(time.RFC3339),
+	}
+}
+
+// =============================================================================
 
 // RegisterRequest contains information needed for creating a new user.
 type RegisterRequest struct {
@@ -35,28 +71,28 @@ func (req RegisterRequest) Validate() error {
 	return nil
 }
 
-func toBusPublicNewUser(req RegisterRequest) (pbusrbus.NewUser, error) {
+func toBusPublicNewUser(req RegisterRequest) (pbusrbus.NewPublicUser, error) {
 	roles, err := role.ParseMany(req.Roles)
 	if err != nil {
-		return pbusrbus.NewUser{}, fmt.Errorf("parse: %w", err)
+		return pbusrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
 	}
 
 	addr, err := mail.ParseAddress(req.Email)
 	if err != nil {
-		return pbusrbus.NewUser{}, fmt.Errorf("parse: %w", err)
+		return pbusrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
 	}
 
 	nme, err := name.Parse(req.Name)
 	if err != nil {
-		return pbusrbus.NewUser{}, fmt.Errorf("parse: %w", err)
+		return pbusrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
 	}
 
 	department, err := name.ParseNull(req.Department)
 	if err != nil {
-		return pbusrbus.NewUser{}, fmt.Errorf("parse: %w", err)
+		return pbusrbus.NewPublicUser{}, fmt.Errorf("parse: %w", err)
 	}
 
-	bus := pbusrbus.NewUser{
+	bus := pbusrbus.NewPublicUser{
 		Name:       nme,
 		Email:      *addr,
 		Roles:      roles,
